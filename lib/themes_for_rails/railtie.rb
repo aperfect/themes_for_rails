@@ -28,7 +28,7 @@ module ThemesForRails
     # pulling assets paths from themes_on_rails gem
     initializer "themes_for_rails.assets_path" do |app|
       Dir.glob("#{Rails.root}/themes/*/assets/*").each do |dir|
-        logger.info 'Adding to assets paths: '+dir
+        puts 'Adding to assets paths: '+dir
         app.config.assets.paths << dir
       end
     end
