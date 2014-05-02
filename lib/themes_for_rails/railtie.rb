@@ -24,6 +24,22 @@ module ThemesForRails
         include ThemesForRails::ActionMailer
       end
     end
+
+    # pulling assets paths from themes_on_rails gem
+    initializer "themes_for_rails.assets_path" do |app|
+      Dir.glob("#{Rails.root}/themes/*/assets/*").each do |dir|
+        logger.info 'Adding to assets paths: '+dir
+        app.config.assets.paths << dir
+      end
+    end
+
+    if !Rails.env.development? && !Rails.env.test?
+      initializer "themes_for_rails.precompile" do |app|
+        app.config.assets.precompile += [ Proc.new { |path, fn| fn =~ /themes/ && !%w(.js .css).include?(File.extname(path)) } ]
+        app.config.assets.precompile += Dir["themes/*"].map { |path| "#{path.split('/').last}/all.js" }
+        app.config.assets.precompile += Dir["themes/*"].map { |path| "#{path.split('/').last}/all.css" }
+      end
+    end # end themes_on_rails code
     
     rake_tasks do
       load "tasks/themes_for_rails.rake"
