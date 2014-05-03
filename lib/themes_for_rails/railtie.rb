@@ -9,9 +9,6 @@ module ThemesForRails
         ThemesForRails.config.send "#{key}=".to_sym, value
       end
       
-      # Adding theme stylesheets path to sass, automatically. 
-      ThemesForRails.add_themes_path_to_sass if ThemesForRails.config.use_sass?
-      
       ActiveSupport.on_load(:action_view) do
         include ThemesForRails::ActionView
       end
@@ -28,7 +25,6 @@ module ThemesForRails
     # pulling assets paths from themes_on_rails gem
     initializer "themes_for_rails.assets_path" do |app|
       Dir.glob("#{Rails.root}/themes/*/assets/*").each do |dir|
-        puts 'Adding to assets paths: '+dir
         app.config.assets.paths << dir
       end
     end
@@ -36,8 +32,8 @@ module ThemesForRails
     if !Rails.env.development? && !Rails.env.test?
       initializer "themes_for_rails.precompile" do |app|
         app.config.assets.precompile += [ Proc.new { |path, fn| fn =~ /themes/ && !%w(.js .css).include?(File.extname(path)) } ]
-        app.config.assets.precompile += Dir["themes/*"].map { |path| "#{path.split('/').last}/all.js" }
-        app.config.assets.precompile += Dir["themes/*"].map { |path| "#{path.split('/').last}/all.css" }
+        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/*"].map { |path| "#{path.split('/').last}/all.js" }
+        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/*"].map { |path| "#{path.split('/').last}/all.css" }
       end
     end # end themes_on_rails code
     
