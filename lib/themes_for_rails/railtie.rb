@@ -32,8 +32,8 @@ module ThemesForRails
     if !Rails.env.development? && !Rails.env.test?
       initializer "themes_for_rails.precompile" do |app|
         app.config.assets.precompile += [ Proc.new { |path, fn| fn =~ /themes/ && !%w(.js .css).include?(File.extname(path)) } ]
-        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/*"].map { |path| "#{path.split('/').last}/all.js" }
-        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/*"].map { |path| "#{path.split('/').last}/all.css" }
+        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/javascripts/*/*"].map { |path| "#{path.split('/').last}/all.js" }
+        app.config.assets.precompile += Dir["#{Rails.root}/themes/*/assets/stylesheets/*/*"].map { |path| "#{path.split('/').last}/all.css" }
       end
     end # end themes_on_rails code
     
